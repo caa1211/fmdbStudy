@@ -16,7 +16,30 @@
 
 @implementation ViewController
 
-FMDatabase *database;
++ (FMDatabase*)sharedDatabase
+{
+    static FMDatabase* sharedDatabase = nil;
+    if (sharedDatabase == nil)
+    {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *docsPath = [paths objectAtIndex:0];
+        NSString *path = [docsPath stringByAppendingPathComponent:@"shoppingGuide.sqlite"];
+        
+        NSLog(@"path is %@",docsPath);
+        sharedDatabase = [FMDatabase databaseWithPath:path];
+    }
+    return sharedDatabase;
+}
+
++ (void) tableCreator:(NSString*)tableName schema:(NSString*)schema {
+    FMDatabase *database = [ViewController sharedDatabase];
+    NSString *sqlCreateCmd = @"CREATE TABLE IF NOT EXISTS";
+    [database executeUpdate:[NSString stringWithFormat:@"%@ %@(%@)",sqlCreateCmd, tableName, schema]];
+}
+
++ (NSNumber *) generateTimestamp {
+    return [NSNumber numberWithInteger:[[NSDate date] timeIntervalSince1970]];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -26,53 +49,29 @@ FMDatabase *database;
 - (IBAction)onCreateDB:(id)sender {
     
     //Create Database
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *docsPath = [paths objectAtIndex:0];
-    NSString *path = [docsPath stringByAppendingPathComponent:@"shoppingGuide.sqlite"];
-    
-    NSLog(@"path is %@",docsPath);
-    database = [FMDatabase databaseWithPath:path];
-    
-    if(![database open]){
-        NSLog(@"DB Can't Open");
-    }
-    
+
+    FMDatabase *database = [ViewController sharedDatabase];
     
     NSString *productSchema = @"id TEXT PRIMARY KEY, image TEXT, title TEXT, market TEXT, desc TEXT, price INTEGER, url TEXT";
     
     //Create Table
 //    [database executeUpdate:@"CREATE TABLE IF NOT EXISTS favoriteList(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, ts TIMESTAMP)"];
     
-    [self tableCreator:@"favoriteList" schema:@"id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, ts TIMESTAMP"];
-    [self tableCreator:@"favoriteItem" schema:[NSString stringWithFormat:@"%@, %@", productSchema, @"listId INTEGER"]];
-    [self tableCreator:@"viewHistory" schema:[NSString stringWithFormat:@"%@, %@", productSchema, @"ts TIMESTAMP"]];
-    [self tableCreator:@"searchHistory" schema:@"id INTEGER PRIMARY KEY AUTOINCREMENT, keyword TEXT"];
-    
-    [database close];
-}
-
-- (void) tableCreator:(NSString*)tableName schema:(NSString*)schema {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *docsPath = [paths objectAtIndex:0];
-    NSString *path = [docsPath stringByAppendingPathComponent:@"shoppingGuide.sqlite"];
-    
-    NSLog(@"path is %@",docsPath);
-    database = [FMDatabase databaseWithPath:path];
-    
     if(![database open]){
         NSLog(@"DB Can't Open");
     }
 
-    NSString *sqlCreateCmd = @"CREATE TABLE IF NOT EXISTS";
-    [database executeUpdate:[NSString stringWithFormat:@"%@ %@(%@)",sqlCreateCmd, tableName, schema]];
+    [ViewController tableCreator:@"favoriteList" schema:@"id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, ts TIMESTAMP"];
+    [ViewController tableCreator:@"favoriteItem" schema:[NSString stringWithFormat:@"%@, %@", productSchema, @"listId INTEGER"]];
+    [ViewController tableCreator:@"viewHistory" schema:[NSString stringWithFormat:@"%@, %@", productSchema, @"ts TIMESTAMP"]];
+    [ViewController tableCreator:@"searchHistory" schema:@"id INTEGER PRIMARY KEY AUTOINCREMENT, keyword TEXT"];
+    
+    [database close];
 }
 
 - (IBAction)onDeleteTable:(id)sender {
-    NSArray *docPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDir = [docPaths objectAtIndex:0];
-    NSString *dbPath = [documentsDir   stringByAppendingPathComponent:@"shoppingGuide.sqlite"];
+    FMDatabase *database = [ViewController sharedDatabase];
     
-    FMDatabase *database = [FMDatabase databaseWithPath:dbPath];
     if(![database open]){
         NSLog(@"DB Can't Open");
     }
@@ -87,12 +86,7 @@ FMDatabase *database;
 
 
 - (IBAction)onInsert:(id)sender {
-    
-    NSArray *docPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDir = [docPaths objectAtIndex:0];
-    NSString *dbPath = [documentsDir   stringByAppendingPathComponent:@"shoppingGuide.sqlite"];
-    
-    FMDatabase *database = [FMDatabase databaseWithPath:dbPath];
+    FMDatabase *database = [ViewController sharedDatabase];
     if(![database open]){
         NSLog(@"DB Can't Open");
     }
@@ -105,15 +99,8 @@ FMDatabase *database;
     [database close];
 }
 
-
-//Update
-
 - (IBAction)onDelete:(id)sender {
-    NSArray *docPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDir = [docPaths objectAtIndex:0];
-    NSString *dbPath = [documentsDir   stringByAppendingPathComponent:@"shoppingGuide.sqlite"];
-    
-    FMDatabase *database = [FMDatabase databaseWithPath:dbPath];
+    FMDatabase *database = [ViewController sharedDatabase];
     if(![database open]){
         NSLog(@"DB Can't Open");
     }
@@ -126,32 +113,24 @@ FMDatabase *database;
 
 - (IBAction)onUpdate:(id)sender {
     
-    NSArray *docPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDir = [docPaths objectAtIndex:0];
-    NSString *dbPath = [documentsDir   stringByAppendingPathComponent:@"shoppingGuide.sqlite"];
-    
-    FMDatabase *database = [FMDatabase databaseWithPath:dbPath];
+    FMDatabase *database = [ViewController sharedDatabase];
     if(![database open]){
         NSLog(@"DB Can't Open");
     }
 
-    
-    NSNumber *timestamp = [NSNumber numberWithInteger:[[NSDate date] timeIntervalSince1970]];
+    NSNumber *timestamp = [ViewController generateTimestamp];
     NSInteger favId = [NSNumber numberWithInt:1];
     
     [database executeUpdate:@"UPDATE favoriteList SET ts=? WHERE id=?", timestamp, favId];
     
+    [database close];
 }
 
 
 
 - (IBAction)onSelect:(id)sender {
     
-    NSArray *docPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDir = [docPaths objectAtIndex:0];
-    NSString *dbPath = [documentsDir   stringByAppendingPathComponent:@"shoppingGuide.sqlite"];
-    
-    FMDatabase *database = [FMDatabase databaseWithPath:dbPath];
+    FMDatabase *database = [ViewController sharedDatabase];
     if(![database open]){
         NSLog(@"DB Can't Open");
     }
@@ -173,11 +152,8 @@ FMDatabase *database;
 
 - (IBAction)onSelectByName:(id)sender {
     
-    NSArray *docPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDir = [docPaths objectAtIndex:0];
-    NSString *dbPath = [documentsDir   stringByAppendingPathComponent:@"shoppingGuide.sqlite"];
+    FMDatabase *database = [ViewController sharedDatabase];
     
-    FMDatabase *database = [FMDatabase databaseWithPath:dbPath];
     if(![database open]){
         NSLog(@"DB Can't Open");
     }
