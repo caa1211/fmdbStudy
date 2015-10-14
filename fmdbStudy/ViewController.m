@@ -55,7 +55,7 @@
         NSLog(@"DB Can't Open");
     }
 
-    [ViewController tableCreator:@"favoriteList" schema:@"id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, ts TIMESTAMP"];
+    [ViewController tableCreator:@"favoriteList" schema:@"id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, ts TIMESTAMP"];
 
     [ViewController tableCreator:@"favoriteListToItem" schema:@"favListId INTEGER, favProductId TEXT, FOREIGN KEY(favListId) REFERENCES favoriteList(id), FOREIGN KEY(favProductId) REFERENCES favoriteItem(productId), UNIQUE (favListId, favProductId)"];
     
@@ -149,6 +149,14 @@
     [database close];
 }
 
+- (IBAction)onDeleteMultipleFav:(id)sender {
+    FMDatabase *database = [ViewController sharedDatabase];
+    if(![database open]){
+        NSLog(@"DB Can't Open");
+    }
+    [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteList WHERE id IN ('1', '2', '3', '4')"]];
+    [database close];
+}
 
 - (IBAction)onUpdate:(id)sender {
     

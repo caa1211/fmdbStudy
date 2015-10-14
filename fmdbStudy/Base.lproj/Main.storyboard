@@ -84,6 +84,14 @@
                                     <action selector="onInsertSearchHistory:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Tn8-RP-Yzx"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ijW-D3-RVZ">
+                                <rect key="frame" x="95" y="411" width="152" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Delete multiple favList"/>
+                                <connections>
+                                    <action selector="onDeleteMultipleFav:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Klc-Jm-dma"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
