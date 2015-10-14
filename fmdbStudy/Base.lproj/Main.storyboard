@@ -21,39 +21,39 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="9yz-B4-ZSh">
-                                <rect key="frame" x="68" y="231" width="201" height="30"/>
+                                <rect key="frame" x="68" y="194" width="201" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Insert"/>
+                                <state key="normal" title="Insert favList"/>
                                 <connections>
                                     <action selector="onInsert:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DOi-aX-II5"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="5Wf-I9-e2L" userLabel="Select">
-                                <rect key="frame" x="68" y="328" width="201" height="30"/>
+                                <rect key="frame" x="68" y="289" width="201" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Select"/>
+                                <state key="normal" title="Select favList"/>
                                 <connections>
                                     <action selector="onSelect:" destination="BYZ-38-t0r" eventType="touchUpInside" id="feP-J8-hi6"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Z2g-aN-ayt">
-                                <rect key="frame" x="68" y="277" width="201" height="30"/>
+                                <rect key="frame" x="69" y="240" width="201" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Delete"/>
+                                <state key="normal" title="Delete favList"/>
                                 <connections>
                                     <action selector="onDelete:" destination="BYZ-38-t0r" eventType="touchUpInside" id="COI-12-wKx"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Nzg-DE-175">
-                                <rect key="frame" x="143" y="378" width="51" height="30"/>
+                                <rect key="frame" x="118" y="327" width="100" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Update"/>
+                                <state key="normal" title="Update favList"/>
                                 <connections>
                                     <action selector="onUpdate:" destination="BYZ-38-t0r" eventType="touchUpInside" id="vEI-OJ-k0t"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="dHE-K5-j7F">
-                                <rect key="frame" x="115" y="434" width="106" height="30"/>
+                                <rect key="frame" x="118" y="373" width="106" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Select by name"/>
                                 <connections>
@@ -69,7 +69,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="o7j-Ch-S69">
-                                <rect key="frame" x="112" y="488" width="97" height="30"/>
+                                <rect key="frame" x="112" y="471" width="97" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Insert FavItem"/>
                                 <connections>
@@ -77,7 +77,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="dQ0-Br-PYA">
-                                <rect key="frame" x="96" y="532" width="145" height="30"/>
+                                <rect key="frame" x="96" y="509" width="145" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Insert Search History"/>
                                 <connections>

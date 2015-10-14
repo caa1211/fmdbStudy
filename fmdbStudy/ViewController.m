@@ -49,7 +49,6 @@
 - (IBAction)onCreateDB:(id)sender {
     
     //Create Database
-
     FMDatabase *database = [ViewController sharedDatabase];
     
     if(![database open]){
@@ -73,11 +72,9 @@
     NSInteger maxSearchHistory = 10;
     FMDatabase *database = [ViewController sharedDatabase];
     [database open];
-    [database beginTransaction];
     NSNumber *timestamp = [ViewController generateTimestamp];
     [database executeUpdate:@"INSERT INTO searchHistory(keyword, ts) VALUES (?, ?)", @"iphone", timestamp];
     [database executeUpdate: [NSString stringWithFormat:@"DELETE FROM searchHistory WHERE ts NOT IN (SELECT ts FROM searchHistory ORDER BY -ts LIMIT %ld)", maxSearchHistory]];
-    [database commit];
     [database close];
     
 }
@@ -142,18 +139,13 @@
     if(![database open]){
         NSLog(@"DB Can't Open");
     }
-    
-    [database beginTransaction];
-    
+ 
     NSNumber *favListId = [NSNumber numberWithInteger:1];
     [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteList WHERE id=%@",favListId]];
-
     [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteListToItem WHERE favListId=%@",favListId]];
-    
     // Remove the favItems which are not existed in favoriteListToItem
     [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteItem WHERE productId NOT IN (SELECT favProductId FROM favoriteListToItem)"]];
     
-    [database commit];
     [database close];
 }
 
@@ -205,7 +197,7 @@
         NSLog(@"DB Can't Open");
     }
     
-    FMResultSet *results = [database executeQuery:@"SELECT * FROM favoriteList WHERE name=?",@"星期天記得買2"];
+    FMResultSet *results = [database executeQuery:@"SELECT * FROM favoriteList WHERE name=?",@"星期天記得買"];
     while([results next]) {
         NSString *name = [results stringForColumn:@"name"];
         NSInteger id  = [results intForColumn:@"id"];
