@@ -2,7 +2,7 @@
 # platform :ios, '6.0'
 
 target 'fmdbStudy' do
-    pod 'FMDB'
+    pod 'FMDB', '~> 2.5'
 end
 
 target 'fmdbStudyTests' do

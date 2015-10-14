@@ -55,6 +55,7 @@
         NSLog(@"DB Can't Open");
     }
 
+    [database beginTransaction];
     [ViewController tableCreator:@"favoriteList" schema:@"id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, ts TIMESTAMP"];
 
     [ViewController tableCreator:@"favoriteListToItem" schema:@"favListId INTEGER, favProductId TEXT, FOREIGN KEY(favListId) REFERENCES favoriteList(id), FOREIGN KEY(favProductId) REFERENCES favoriteItem(productId), UNIQUE (favListId, favProductId)"];
@@ -64,6 +65,7 @@
     [ViewController tableCreator:@"viewHistory" schema:@"productId TEXT PRIMARY KEY, image TEXT, title TEXT, market TEXT, desc TEXT, price INTEGER, url TEXT, ts TIMESTAMP"];
     
     [ViewController tableCreator:@"searchHistory" schema:@"keyword TEXT PRIMARY KEY, ts TIMESTAMP"];
+    [database commit];
     
     [database close];
 }
@@ -72,11 +74,20 @@
     NSInteger maxSearchHistory = 10;
     FMDatabase *database = [ViewController sharedDatabase];
     [database open];
-    NSNumber *timestamp = [ViewController generateTimestamp];
-    [database executeUpdate:@"INSERT INTO searchHistory(keyword, ts) VALUES (?, ?)", @"iphone", timestamp];
-    [database executeUpdate: [NSString stringWithFormat:@"DELETE FROM searchHistory WHERE ts NOT IN (SELECT ts FROM searchHistory ORDER BY -ts LIMIT %ld)", maxSearchHistory]];
-    [database close];
     
+    [database beginTransaction];
+    NSNumber *timestamp = [ViewController generateTimestamp];
+    NSString *keyword = @"iphone";
+    
+    // Update or insert
+    if (![database executeUpdate:@"UPDATE searchHistory SET ts=? WHERE keyword=?", timestamp, keyword]) {
+        [database executeUpdate:@"INSERT INTO searchHistory(keyword, ts) VALUES (?, ?)", @"iphone", timestamp];
+        [database executeUpdate: [NSString stringWithFormat:@"DELETE FROM searchHistory WHERE ts NOT IN (SELECT ts FROM searchHistory ORDER BY -ts LIMIT %ld)", maxSearchHistory]];
+    }
+    
+    [database commit];
+    
+    [database close];
 }
 
 - (IBAction)onInsertFavItem:(id)sender {
@@ -110,11 +121,13 @@
         NSLog(@"DB Can't Open");
     }
     
-    [database executeUpdate:@"DROP TABLE favoriteList"];
-    [database executeUpdate:@"DROP TABLE favoriteListToItem"];
-    [database executeUpdate:@"DROP TABLE favoriteItem"];
-    [database executeUpdate:@"DROP TABLE viewHistory"];
-    [database executeUpdate:@"DROP TABLE searchHistory"];
+    [database beginTransaction];
+    [database executeUpdate:@"DROP TABLE IF EXISTS favoriteList"];
+    [database executeUpdate:@"DROP TABLE IF EXISTS favoriteListToItem"];
+    [database executeUpdate:@"DROP TABLE IF EXISTS favoriteItem"];
+    [database executeUpdate:@"DROP TABLE IF EXISTS viewHistory"];
+    [database executeUpdate:@"DROP TABLE IF EXISTS searchHistory"];
+    [database commit];
     
     [database close];
 }
@@ -140,11 +153,13 @@
         NSLog(@"DB Can't Open");
     }
  
+    [database beginTransaction];
     NSNumber *favListId = [NSNumber numberWithInteger:1];
     [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteList WHERE id=%@",favListId]];
     [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteListToItem WHERE favListId=%@",favListId]];
     // Remove the favItems which are not existed in favoriteListToItem
     [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteItem WHERE productId NOT IN (SELECT favProductId FROM favoriteListToItem)"]];
+    [database commit];
     
     [database close];
 }
