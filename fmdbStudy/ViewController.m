@@ -31,6 +31,7 @@
     return sharedDatabase;
 }
 
+
 + (void) tableCreator:(NSString*)tableName schema:(NSString*)schema {
     FMDatabase *database = [ViewController sharedDatabase];
     NSString *sqlCreateCmd = @"CREATE TABLE IF NOT EXISTS";
@@ -52,22 +53,48 @@
 
     FMDatabase *database = [ViewController sharedDatabase];
     
-    NSString *productSchema = @"id TEXT PRIMARY KEY, image TEXT, title TEXT, market TEXT, desc TEXT, price INTEGER, url TEXT";
-    
-    //Create Table
-//    [database executeUpdate:@"CREATE TABLE IF NOT EXISTS favoriteList(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, ts TIMESTAMP)"];
-    
     if(![database open]){
         NSLog(@"DB Can't Open");
     }
 
-    [ViewController tableCreator:@"favoriteList" schema:@"id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, ts TIMESTAMP"];
-    [ViewController tableCreator:@"favoriteItem" schema:[NSString stringWithFormat:@"%@, %@", productSchema, @"listId INTEGER"]];
-    [ViewController tableCreator:@"viewHistory" schema:[NSString stringWithFormat:@"%@, %@", productSchema, @"ts TIMESTAMP"]];
-    [ViewController tableCreator:@"searchHistory" schema:@"id INTEGER PRIMARY KEY AUTOINCREMENT, keyword TEXT"];
+    [ViewController tableCreator:@"favoriteList" schema:@"name TEXT PRIMARY KEY, ts TIMESTAMP"];
+
+    [ViewController tableCreator:@"favoriteListToItem" schema:@"favListName TEXT, favProductId TEXT, FOREIGN KEY(favListName) REFERENCES favoriteList(name), FOREIGN KEY(favProductId) REFERENCES favoriteItem(productId), UNIQUE (favListName, favProductId)"];
+    
+
+    
+    [ViewController tableCreator:@"favoriteItem" schema:@"productId TEXT PRIMARY KEY, image TEXT, title TEXT, market TEXT, desc TEXT, price INTEGER, url TEXT, ts TIMESTAMP"];
+    
+    [ViewController tableCreator:@"viewHistory" schema:@"productId TEXT PRIMARY KEY, image TEXT, title TEXT, market TEXT, desc TEXT, price INTEGER, url TEXT, ts TIMESTAMP"];
+    
+    [ViewController tableCreator:@"searchHistory" schema:@"keyword TEXT PRIMARY KEY"];
     
     [database close];
 }
+
+- (IBAction)onInsertFavItem:(id)sender {
+    FMDatabase *database = [ViewController sharedDatabase];
+    if(![database open]){
+        NSLog(@"DB Can't Open");
+    }
+
+    [database executeUpdate:@"PRAGMA foreign_keys = YES"];
+
+    NSNumber *favListName = @"星期天記得買2";
+    NSString *favProductId = @"A12345";
+    
+    [database beginTransaction];
+    [database executeUpdate:@"INSERT INTO favoriteItem(productId, title) VALUES (?, ?)", favProductId, @"黑心商品"];
+    
+    if(![database executeUpdate:@"INSERT INTO favoriteListToItem(favListName, favProductId) VALUES (?, ?)", favListName, favProductId]){
+        [database rollback];
+    }else{
+        [database commit];
+    }
+    
+    [database close];
+}
+
 
 - (IBAction)onDeleteTable:(id)sender {
     FMDatabase *database = [ViewController sharedDatabase];
@@ -77,6 +104,7 @@
     }
     
     [database executeUpdate:@"DROP TABLE favoriteList"];
+    [database executeUpdate:@"DROP TABLE favoriteListToItem"];
     [database executeUpdate:@"DROP TABLE favoriteItem"];
     [database executeUpdate:@"DROP TABLE viewHistory"];
     [database executeUpdate:@"DROP TABLE searchHistory"];
@@ -92,9 +120,9 @@
     }
     
     NSNumber *timestamp = [NSNumber numberWithInteger:[[NSDate date] timeIntervalSince1970]];
-    NSString *name = @"星期天記得買2";
+    NSString *favListName = @"星期天記得買2";
    
-    [database executeUpdate:@"INSERT INTO favoriteList(name,ts) VALUES ( ?, ?)", name, timestamp];
+    [database executeUpdate:@"INSERT INTO favoriteList(name,ts) VALUES (?, ?)", favListName, timestamp];
 
     [database close];
 }
