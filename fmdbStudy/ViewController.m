@@ -158,7 +158,7 @@
     }
 
     NSNumber *timestamp = [ViewController generateTimestamp];
-    NSInteger favId = [NSNumber numberWithInt:1];
+    NSNumber *favId = [NSNumber numberWithInt:1];
     
     [database executeUpdate:@"UPDATE favoriteList SET ts=? WHERE id=?", timestamp, favId];
     
