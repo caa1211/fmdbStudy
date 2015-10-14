@@ -31,7 +31,6 @@
     return sharedDatabase;
 }
 
-
 + (void) tableCreator:(NSString*)tableName schema:(NSString*)schema {
     FMDatabase *database = [ViewController sharedDatabase];
     NSString *sqlCreateCmd = @"CREATE TABLE IF NOT EXISTS";
@@ -61,15 +60,26 @@
 
     [ViewController tableCreator:@"favoriteListToItem" schema:@"favListName TEXT, favProductId TEXT, FOREIGN KEY(favListName) REFERENCES favoriteList(name), FOREIGN KEY(favProductId) REFERENCES favoriteItem(productId), UNIQUE (favListName, favProductId)"];
     
-
-    
     [ViewController tableCreator:@"favoriteItem" schema:@"productId TEXT PRIMARY KEY, image TEXT, title TEXT, market TEXT, desc TEXT, price INTEGER, url TEXT, ts TIMESTAMP"];
     
     [ViewController tableCreator:@"viewHistory" schema:@"productId TEXT PRIMARY KEY, image TEXT, title TEXT, market TEXT, desc TEXT, price INTEGER, url TEXT, ts TIMESTAMP"];
     
-    [ViewController tableCreator:@"searchHistory" schema:@"keyword TEXT PRIMARY KEY"];
+    [ViewController tableCreator:@"searchHistory" schema:@"keyword TEXT PRIMARY KEY, ts TIMESTAMP"];
     
     [database close];
+}
+
+- (IBAction)onInsertSearchHistory:(id)sender {
+    NSInteger maxSearchHistory = 10;
+    FMDatabase *database = [ViewController sharedDatabase];
+    [database open];
+    [database beginTransaction];
+    NSNumber *timestamp = [ViewController generateTimestamp];
+    [database executeUpdate:@"INSERT INTO searchHistory(keyword, ts) VALUES (?, ?)", @"iphone", timestamp];
+    [database executeUpdate: [NSString stringWithFormat:@"DELETE FROM searchHistory WHERE ts NOT IN (SELECT ts FROM searchHistory ORDER BY -ts LIMIT %ld)", maxSearchHistory]];
+    [database commit];
+    [database close];
+    
 }
 
 - (IBAction)onInsertFavItem:(id)sender {
@@ -80,7 +90,7 @@
 
     [database executeUpdate:@"PRAGMA foreign_keys = YES"];
 
-    NSNumber *favListName = @"星期天記得買2";
+    NSString *favListName = @"星期天記得買2";
     NSString *favProductId = @"A12345";
     
     [database beginTransaction];
@@ -119,7 +129,7 @@
         NSLog(@"DB Can't Open");
     }
     
-    NSNumber *timestamp = [NSNumber numberWithInteger:[[NSDate date] timeIntervalSince1970]];
+    NSNumber *timestamp = [ViewController generateTimestamp];
     NSString *favListName = @"星期天記得買2";
    
     [database executeUpdate:@"INSERT INTO favoriteList(name,ts) VALUES (?, ?)", favListName, timestamp];
