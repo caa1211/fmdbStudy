@@ -130,7 +130,7 @@
     }
     
     NSNumber *timestamp = [ViewController generateTimestamp];
-    NSString *favListName = @"星期天記得買2";
+    NSString *favListName = @"星期天記得買";
    
     [database executeUpdate:@"INSERT INTO favoriteList(name,ts) VALUES (?, ?)", favListName, timestamp];
 
@@ -143,8 +143,17 @@
         NSLog(@"DB Can't Open");
     }
     
-    [database executeUpdate:@"DELETE FROM favoriteList WHERE id=1"];
+    [database beginTransaction];
     
+    NSNumber *favListId = [NSNumber numberWithInteger:1];
+    [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteList WHERE id=%@",favListId]];
+
+    [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteListToItem WHERE favListId=%@",favListId]];
+    
+    // Remove the favItems which are not existed in favoriteListToItem
+    [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteItem WHERE productId NOT IN (SELECT favProductId FROM favoriteListToItem)"]];
+    
+    [database commit];
     [database close];
 }
 
