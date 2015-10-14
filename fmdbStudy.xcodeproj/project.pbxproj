@@ -16,7 +16,10 @@
 		ADB0B8DF1BCCC9B90002E42C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADB0B8DD1BCCC9B90002E42C /* LaunchScreen.storyboard */; };
 		ADB0B8EA1BCCC9B90002E42C /* fmdbStudyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB0B8E91BCCC9B90002E42C /* fmdbStudyTests.m */; };
 		ADB0B8F51BCCC9B90002E42C /* fmdbStudyUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB0B8F41BCCC9B90002E42C /* fmdbStudyUITests.m */; };
-		ADB0B9041BCCCDFC0002E42C /* DatabaseController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB0B9031BCCCDFC0002E42C /* DatabaseController.m */; settings = {ASSET_TAGS = (); }; };
+		ADB0B9091BCEA73D0002E42C /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB0B9081BCEA73D0002E42C /* DatabaseManager.m */; settings = {ASSET_TAGS = (); }; };
+		ADB0B90D1BCEA84D0002E42C /* ApiTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB0B90B1BCEA84D0002E42C /* ApiTestViewController.m */; settings = {ASSET_TAGS = (); }; };
+		ADB0B90E1BCEA84D0002E42C /* ApiTestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADB0B90C1BCEA84D0002E42C /* ApiTestViewController.xib */; settings = {ASSET_TAGS = (); }; };
+		ADB0B9111BCEAD160002E42C /* SoppingGuideDB.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB0B9101BCEAD160002E42C /* SoppingGuideDB.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,8 +56,13 @@
 		ADB0B8F01BCCC9B90002E42C /* fmdbStudyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fmdbStudyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADB0B8F41BCCC9B90002E42C /* fmdbStudyUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = fmdbStudyUITests.m; sourceTree = "<group>"; };
 		ADB0B8F61BCCC9B90002E42C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		ADB0B9021BCCCDFC0002E42C /* DatabaseController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseController.h; sourceTree = "<group>"; };
-		ADB0B9031BCCCDFC0002E42C /* DatabaseController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseController.m; sourceTree = "<group>"; };
+		ADB0B9071BCEA73D0002E42C /* DatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseManager.h; sourceTree = "<group>"; };
+		ADB0B9081BCEA73D0002E42C /* DatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseManager.m; sourceTree = "<group>"; };
+		ADB0B90A1BCEA84D0002E42C /* ApiTestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApiTestViewController.h; sourceTree = "<group>"; };
+		ADB0B90B1BCEA84D0002E42C /* ApiTestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiTestViewController.m; sourceTree = "<group>"; };
+		ADB0B90C1BCEA84D0002E42C /* ApiTestViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ApiTestViewController.xib; sourceTree = "<group>"; };
+		ADB0B90F1BCEAD160002E42C /* SoppingGuideDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoppingGuideDB.h; sourceTree = "<group>"; };
+		ADB0B9101BCEAD160002E42C /* SoppingGuideDB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoppingGuideDB.m; sourceTree = "<group>"; };
 		AEC64B5235A994170A2F5311 /* libPods-fmdbStudy.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-fmdbStudy.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D56CB3EC8EEFE9F17036B6F3 /* Pods-fmdbStudy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fmdbStudy.release.xcconfig"; path = "Pods/Target Support Files/Pods-fmdbStudy/Pods-fmdbStudy.release.xcconfig"; sourceTree = "<group>"; };
 		FF639524C8FF2DE9D9B7B0ED /* Pods-fmdbStudy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-fmdbStudy.debug.xcconfig"; path = "Pods/Target Support Files/Pods-fmdbStudy/Pods-fmdbStudy.debug.xcconfig"; sourceTree = "<group>"; };
@@ -128,8 +136,13 @@
 		ADB0B8CE1BCCC9B90002E42C /* fmdbStudy */ = {
 			isa = PBXGroup;
 			children = (
-				ADB0B9021BCCCDFC0002E42C /* DatabaseController.h */,
-				ADB0B9031BCCCDFC0002E42C /* DatabaseController.m */,
+				ADB0B9071BCEA73D0002E42C /* DatabaseManager.h */,
+				ADB0B9081BCEA73D0002E42C /* DatabaseManager.m */,
+				ADB0B90F1BCEAD160002E42C /* SoppingGuideDB.h */,
+				ADB0B9101BCEAD160002E42C /* SoppingGuideDB.m */,
+				ADB0B90A1BCEA84D0002E42C /* ApiTestViewController.h */,
+				ADB0B90B1BCEA84D0002E42C /* ApiTestViewController.m */,
+				ADB0B90C1BCEA84D0002E42C /* ApiTestViewController.xib */,
 				ADB0B8D21BCCC9B90002E42C /* AppDelegate.h */,
 				ADB0B8D31BCCC9B90002E42C /* AppDelegate.m */,
 				ADB0B8D51BCCC9B90002E42C /* ViewController.h */,
@@ -280,6 +293,7 @@
 				ADB0B8DF1BCCC9B90002E42C /* LaunchScreen.storyboard in Resources */,
 				ADB0B8DC1BCCC9B90002E42C /* Assets.xcassets in Resources */,
 				ADB0B8DA1BCCC9B90002E42C /* Main.storyboard in Resources */,
+				ADB0B90E1BCEA84D0002E42C /* ApiTestViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,9 +351,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADB0B9041BCCCDFC0002E42C /* DatabaseController.m in Sources */,
+				ADB0B9091BCEA73D0002E42C /* DatabaseManager.m in Sources */,
+				ADB0B9111BCEAD160002E42C /* SoppingGuideDB.m in Sources */,
 				ADB0B8D71BCCC9B90002E42C /* ViewController.m in Sources */,
 				ADB0B8D41BCCC9B90002E42C /* AppDelegate.m in Sources */,
+				ADB0B90D1BCEA84D0002E42C /* ApiTestViewController.m in Sources */,
 				ADB0B8D11BCCC9B90002E42C /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -92,6 +92,14 @@
                                     <action selector="onDeleteMultipleFav:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Klc-Jm-dma"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="rZO-LI-eSC">
+                                <rect key="frame" x="148" y="21" width="47" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="NaviTo"/>
+                                <connections>
+                                    <action selector="onNaviTo:" destination="BYZ-38-t0r" eventType="touchUpInside" id="B92-5F-d2l"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>

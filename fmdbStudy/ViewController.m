@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import <FMDatabase.h>
 #import <FMDatabaseAdditions.h>
+#import "ApiTestViewController.h"
 
 @interface ViewController ()
 
@@ -171,6 +172,15 @@
     }
     [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteList WHERE id IN ('1', '2', '3', '4')"]];
     [database close];
+}
+
+- (IBAction)onNaviTo:(id)sender {
+    ApiTestViewController *vc = [[ApiTestViewController alloc] init];
+    
+    UINavigationController *navigationController =
+    [[UINavigationController alloc] initWithRootViewController:vc];
+    
+    [self presentViewController:navigationController animated:YES completion:nil];
 }
 
 - (IBAction)onUpdate:(id)sender {
