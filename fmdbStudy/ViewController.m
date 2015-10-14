@@ -56,9 +56,9 @@
         NSLog(@"DB Can't Open");
     }
 
-    [ViewController tableCreator:@"favoriteList" schema:@"name TEXT PRIMARY KEY, ts TIMESTAMP"];
+    [ViewController tableCreator:@"favoriteList" schema:@"id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, ts TIMESTAMP"];
 
-    [ViewController tableCreator:@"favoriteListToItem" schema:@"favListName TEXT, favProductId TEXT, FOREIGN KEY(favListName) REFERENCES favoriteList(name), FOREIGN KEY(favProductId) REFERENCES favoriteItem(productId), UNIQUE (favListName, favProductId)"];
+    [ViewController tableCreator:@"favoriteListToItem" schema:@"favListId INTEGER, favProductId TEXT, FOREIGN KEY(favListId) REFERENCES favoriteList(id), FOREIGN KEY(favProductId) REFERENCES favoriteItem(productId), UNIQUE (favListId, favProductId)"];
     
     [ViewController tableCreator:@"favoriteItem" schema:@"productId TEXT PRIMARY KEY, image TEXT, title TEXT, market TEXT, desc TEXT, price INTEGER, url TEXT, ts TIMESTAMP"];
     
@@ -90,13 +90,13 @@
 
     [database executeUpdate:@"PRAGMA foreign_keys = YES"];
 
-    NSString *favListName = @"星期天記得買2";
+    NSNumber *favListId = [NSNumber numberWithInteger:1];
     NSString *favProductId = @"A12345";
     
     [database beginTransaction];
     [database executeUpdate:@"INSERT INTO favoriteItem(productId, title) VALUES (?, ?)", favProductId, @"黑心商品"];
     
-    if(![database executeUpdate:@"INSERT INTO favoriteListToItem(favListName, favProductId) VALUES (?, ?)", favListName, favProductId]){
+    if(![database executeUpdate:@"INSERT INTO favoriteListToItem(favListId, favProductId) VALUES (?, ?)", favListId, favProductId]){
         [database rollback];
     }else{
         [database commit];
