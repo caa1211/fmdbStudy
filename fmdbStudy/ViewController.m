@@ -59,9 +59,9 @@
     [database beginTransaction];
     [ViewController tableCreator:@"favoriteList" schema:@"id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, ts TIMESTAMP"];
 
-    [ViewController tableCreator:@"favoriteListToItem" schema:@"favListId INTEGER, favProductId TEXT, FOREIGN KEY(favListId) REFERENCES favoriteList(id), FOREIGN KEY(favProductId) REFERENCES favoriteItem(productId), UNIQUE (favListId, favProductId)"];
+    [ViewController tableCreator:@"favoriteListToProduct" schema:@"favListId INTEGER, favProductId TEXT, FOREIGN KEY(favListId) REFERENCES favoriteList(id) ON DELETE CASCADE, FOREIGN KEY(favProductId) REFERENCES favoriteProduct(productId), UNIQUE (favListId, favProductId)"];
     
-    [ViewController tableCreator:@"favoriteItem" schema:@"productId TEXT PRIMARY KEY, image TEXT, title TEXT, market TEXT, desc TEXT, price INTEGER, url TEXT, ts TIMESTAMP"];
+    [ViewController tableCreator:@"favoriteProduct" schema:@"productId TEXT PRIMARY KEY, image TEXT, title TEXT, market TEXT, desc TEXT, price INTEGER, url TEXT, ts TIMESTAMP"];
     
     [ViewController tableCreator:@"viewHistory" schema:@"productId TEXT PRIMARY KEY, image TEXT, title TEXT, market TEXT, desc TEXT, price INTEGER, url TEXT, ts TIMESTAMP"];
     
@@ -83,7 +83,7 @@
     // Update or insert
     if (![database executeUpdate:@"UPDATE searchHistory SET ts=? WHERE keyword=?", timestamp, keyword]) {
         [database executeUpdate:@"INSERT INTO searchHistory(keyword, ts) VALUES (?, ?)", @"iphone", timestamp];
-        [database executeUpdate: [NSString stringWithFormat:@"DELETE FROM searchHistory WHERE ts NOT IN (SELECT ts FROM searchHistory ORDER BY -ts LIMIT %ld)", maxSearchHistory]];
+        [database executeUpdate: [NSString stringWithFormat:@" FROM searchHistory WHERE ts NOT IN (SELECT ts FROM searchHistory ORDER BY -ts LIMIT %ld)", maxSearchHistory]];
     }
     
     [database commit];
@@ -103,9 +103,9 @@
     NSString *favProductId = @"A12345";
     
     [database beginTransaction];
-    [database executeUpdate:@"INSERT INTO favoriteItem(productId, title) VALUES (?, ?)", favProductId, @"黑心商品"];
+    [database executeUpdate:@"INSERT INTO favoriteProduct(productId, title) VALUES (?, ?)", favProductId, @"黑心商品"];
     
-    if(![database executeUpdate:@"INSERT INTO favoriteListToItem(favListId, favProductId) VALUES (?, ?)", favListId, favProductId]){
+    if(![database executeUpdate:@"INSERT INTO favoriteListToProduct(favListId, favProductId) VALUES (?, ?)", favListId, favProductId]){
         [database rollback];
     }else{
         [database commit];
@@ -124,8 +124,8 @@
     
     [database beginTransaction];
     [database executeUpdate:@"DROP TABLE IF EXISTS favoriteList"];
-    [database executeUpdate:@"DROP TABLE IF EXISTS favoriteListToItem"];
-    [database executeUpdate:@"DROP TABLE IF EXISTS favoriteItem"];
+    [database executeUpdate:@"DROP TABLE IF EXISTS favoriteListToProduct"];
+    [database executeUpdate:@"DROP TABLE IF EXISTS favoriteProduct"];
     [database executeUpdate:@"DROP TABLE IF EXISTS viewHistory"];
     [database executeUpdate:@"DROP TABLE IF EXISTS searchHistory"];
     [database commit];
@@ -154,13 +154,26 @@
         NSLog(@"DB Can't Open");
     }
  
+#if 0
     [database beginTransaction];
     NSNumber *favListId = [NSNumber numberWithInteger:1];
     [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteList WHERE id=%@",favListId]];
-    [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteListToItem WHERE favListId=%@",favListId]];
-    // Remove the favItems which are not existed in favoriteListToItem
-    [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteItem WHERE productId NOT IN (SELECT favProductId FROM favoriteListToItem)"]];
+    [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteListToProduct WHERE favListId=%@",favListId]];
+    // Remove the favItems which are not existed in favoriteListToProduct
+    [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteProduct WHERE productId NOT IN (SELECT favProductId FROM favoriteListToProduct)"]];
     [database commit];
+#endif
+    
+#if 1
+    [database executeUpdate:@"PRAGMA foreign_keys = YES"];
+    [database beginTransaction];
+    NSNumber *favListId = [NSNumber numberWithInteger:1];
+    [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteList WHERE id=%@",favListId]];
+    
+    // Remove the favItems which are not existed in favoriteListToProduct
+    [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteProduct WHERE productId NOT IN (SELECT favProductId FROM favoriteListToProduct)"]];
+    [database commit];
+#endif
     
     [database close];
 }
