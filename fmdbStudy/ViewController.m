@@ -175,6 +175,30 @@
     [database commit];
 #endif
     
+#if 0
+    [database executeUpdate:@"PRAGMA foreign_keys = YES"];
+    [database beginTransaction];
+    NSNumber *favListId = [NSNumber numberWithInteger:1];
+    
+    FMResultSet *results = [database executeQuery:@"SELECT * FROM favoriteListToProduct WHERE favListId=?",favListId];
+   
+    while([results next]) {
+        NSString *productId = [results stringForColumn:@"favProductId"];
+     
+        FMResultSet *rs = [database executeQuery:@"SELECT COUNT(favListId) AS cnt FROM favoriteListToProduct WHERE favProductId=?",productId];
+        while ([rs next]) {
+            int count = [rs intForColumn:@"cnt"];
+            if (count == 1 ) {
+                [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteProduct WHERE productId='%@'", productId]];
+            }
+        }
+    }
+    
+    [database executeUpdate:[NSString stringWithFormat:@"DELETE FROM favoriteList WHERE id=%@",favListId]];
+
+    [database commit];
+#endif
+    
     [database close];
 }
 
